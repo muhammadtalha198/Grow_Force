@@ -99,12 +99,9 @@ const PresaleForm = () => {
   const [selectedCountry, setSelectedCountry] = useState<'US' | 'Other'>('Other');
   const [tokenAmount, setTokenAmount] = useState<number>(0);
   const [showVerificationScreen, setShowVerificationScreen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false)
 
-  // Read from localStorage on mount
-  const [isVerified, setIsVerified] = useState(() => {
-    const saved = localStorage.getItem('presale_verified');
-    return saved === 'true';
-  });
+  
 
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
