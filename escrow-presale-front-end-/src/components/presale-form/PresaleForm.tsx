@@ -525,8 +525,10 @@ const PresaleForm = () => {
 
         {isVerified && (
           <button type="button" disabled={!isConnected || loading || !selectedCurrencyData.isActive || tokenAmount > remainingTokens} onClick={() => !isConnected || loading ? null : handleBuyTokens()} className={`w-full py-3 md:py-4 mt-3 font-medium border text-sm md:text-base tracking-tight rounded-full duration-200
-          disabled:cursor-not-allowed disabled:opacity-50
-          ${!isConnected
+          disabled:cursor-not-allowed
+          ${tokenAmount > remainingTokens
+            ? 'border-red-600 text-red-600 hover:bg-red-600 hover:text-black cursor-pointer' 
+            :!isConnected
             ? 'border-body-text text-body-text'
             : !selectedCurrencyData.isActive
             ? 'border-body-text text-body-text'
