@@ -101,13 +101,18 @@ const PresaleForm = () => {
   const [showVerificationScreen, setShowVerificationScreen] = useState(false);
   const [isVerified, setIsVerified] = useState(false)
 
-  
+
 
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
 
   const PRESALE_CONTRACT_ADDRESS = import.meta.env.VITE_PRESALE_CONTRACT_ADDRESS || "0x...PRESALE_CONTRACT_ADDRESS";
   const amount = amountInput ? Number(amountInput) : 0;
+
+  const remainingTokens = useMemo(() => {
+    return Math.max(totalPresaleSupply - tokensSold, 0);
+  }, [totalPresaleSupply, tokensSold]);
+  
 
   const currencyDataList = useMemo<Currency[]>(() =>
     BASE_CURRENCIES.map((base) => {
@@ -303,6 +308,11 @@ const PresaleForm = () => {
     if (!isConnected || !address) return alert("Please connect your wallet first");
     if (!amount || amount <= 0) return alert("Please enter a valid amount to purchase");
     if (!isVerified) return alert("Please complete verification first");
+
+    // 🚫 NEW: Prevent purchase beyond remaining supply
+    if (tokenAmount > remainingTokens) {
+      return alert("You have exceeded the maximum number of tokens allowed for purchase.");
+    }  
   
     console.log("💰 Purchase Request:", { amount, selectedCurrency, address });
   
@@ -514,8 +524,19 @@ const PresaleForm = () => {
         )}
 
         {isVerified && (
-          <button type="button" disabled={!isConnected || loading || !selectedCurrencyData.isActive} onClick={() => !isConnected || loading ? null : handleBuyTokens()} className={`w-full py-3 md:py-4 mt-3 font-medium border text-sm md:text-base tracking-tight rounded-full duration-200 ${!isConnected ? 'border-body-text text-body-text cursor-not-allowed opacity-50' : !selectedCurrencyData.isActive ? 'border-body-text text-body-text cursor-not-allowed opacity-60' : loading ? 'border-green-500 text-green-500 cursor-wait opacity-70' : 'border-green-500 text-green-500 hover:bg-green-500 hover:text-black cursor-pointer'}`}>
-            {!isConnected ? "Connect wallet" : !selectedCurrencyData.isActive ? `${selectedCurrencyData.symbol} unavailable` : amount <= 0 ? "Enter amount to Buy" : loading ? `Processing...` : `Buy with ${selectedCurrencyData.symbol}`}
+          <button type="button" disabled={!isConnected || loading || !selectedCurrencyData.isActive || tokenAmount > remainingTokens} onClick={() => !isConnected || loading ? null : handleBuyTokens()} className={`w-full py-3 md:py-4 mt-3 font-medium border text-sm md:text-base tracking-tight rounded-full duration-200
+          disabled:cursor-not-allowed disabled:opacity-50
+          ${!isConnected
+            ? 'border-body-text text-body-text'
+            : !selectedCurrencyData.isActive
+            ? 'border-body-text text-body-text'
+            : loading
+            ? 'border-green-500 text-green-500 cursor-wait opacity-70'
+            : 'border-green-500 text-green-500 hover:bg-green-500 hover:text-black cursor-pointer'
+            }`}>
+            {!isConnected ? "Connect wallet" : !selectedCurrencyData.isActive ? `${selectedCurrencyData.symbol} unavailable` : amount <= 0 ? "Enter amount to Buy" : tokenAmount > remainingTokens
+            ? "You have exceeded the maximum number of tokens allowed for purchase"
+            : loading ? "Processing..." : `Buy with ${selectedCurrencyData.symbol}`}
           </button>
         )}
 
