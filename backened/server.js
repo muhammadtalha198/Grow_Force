@@ -75,8 +75,8 @@ app.get('/api/config', (req, res) => {
 const SUMSUB_BASE_URL = process.env.SUMSUB_BASE_URL;
 const SUMSUB_APP_TOKEN = process.env.SUMSUB_APP_TOKEN;
 const SUMSUB_SECRET_KEY = process.env.SUMSUB_SECRET_KEY;
-const SUMSUB_LEVEL_NAME_US = process.env.SUMSUB_LEVEL_NAME_US;
-const SUMSUB_LEVEL_NAME_OTHER = process.env.SUMSUB_LEVEL_NAME_OTHER;
+const SUMSUB_LEVEL_NAME = process.env.SUMSUB_LEVEL_NAME;
+
 
 
 // Ethers configuration
@@ -212,17 +212,12 @@ app.post('/api/verify/start', (req, res, next) => {
   next();
 }, async (req, res) => {
   try {
-    const { userId, email, phone, country } = req.body;
+    const { userId, email, phone } = req.body;
     if (!userId) {
       return res.status(400).json({ error: 'Missing required field: userId' });
     }
-    if (!country) {
-      return res.status(400).json({ error: 'Missing required field: country' });
-    }
 
-    console.log('country:', country);
-
-    const levelName = country === 'US' ? SUMSUB_LEVEL_NAME_US : SUMSUB_LEVEL_NAME_OTHER;
+    const levelName =  SUMSUB_LEVEL_NAME;
 
     console.log('levelName:', levelName);
 
@@ -581,4 +576,4 @@ app.post('/api/presale/voucher', async (req, res) => {
 });
 
 
-app.listen(3000, () => console.log('✅ Server running on http://localhost:3000'));
+app.listen(3000, () => console.log('✅ Server running on http://localhost:3000'));  
