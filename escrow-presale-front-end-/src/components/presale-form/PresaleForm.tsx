@@ -95,8 +95,8 @@ const PresaleForm = () => {
   const [canClaim, setCanClaim] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [tokenUsdPrice, setTokenUsdPrice] = useState("0.015");
-  const [showCountryModal, setShowCountryModal] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState<'US' | 'Other'>('Other');
+  // const [showCountryModal, setShowCountryModal] = useState(false);
+  // const [selectedCountry, setSelectedCountry] = useState<'US' | 'Other'>('Other');
   const [tokenAmount, setTokenAmount] = useState<number>(0);
   const [showVerificationScreen, setShowVerificationScreen] = useState(false);
   const [isVerified, setIsVerified] = useState(false)
@@ -280,13 +280,12 @@ const PresaleForm = () => {
     localStorage.setItem('presale_verified', String(isVerified));
   }, [isVerified]);
 
-  const startVerification = async (countryCode: 'US' | 'Other') => {
+  const startVerification = async () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL || 'https://dynastical-xzavier-unsanguinarily.ngrok-free.dev'}/api/verify/start`, {
         userId: address,
         email: "user@example.com",
         phone: "+1234567890",
-        country: countryCode === 'US' ? 'US' : 'Other',
       });
       setShowVerificationScreen(true);
     } catch (err: any) {
@@ -294,15 +293,15 @@ const PresaleForm = () => {
     }
   };
 
-  const handleVerifyClick = () => {
+  const handleVerifyClick = async () => {
     if (!isConnected) return alert("Please connect wallet");
-    setShowCountryModal(true);
-  };
+    await startVerification();
+  };  
 
-  const handleCountryConfirm = async () => {
-    setShowCountryModal(false);
-    await startVerification(selectedCountry === 'US' ? 'US' : 'Other');
-  };
+  // const handleCountryConfirm = async () => {
+  //   setShowCountryModal(false);
+  //   await startVerification();
+  // };
 
   const handleBuyTokens = async () => {
     if (!isConnected || !address) return alert("Please connect your wallet first");
@@ -471,7 +470,7 @@ const PresaleForm = () => {
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <VerificationScreen
             userId={address ?? ""}
-            countryCode={selectedCountry}
+            // countryCode={selectedCountry}
             onClose={() => {
               setShowVerificationScreen(false);
               if (address) {
@@ -542,7 +541,7 @@ const PresaleForm = () => {
           </button>
         )}
 
-        {showCountryModal && (
+        {/* {showCountryModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
             <div className="bg-white text-black w-[90%] max-w-sm rounded-lg p-4 shadow-xl">
               <h3 className="text-lg font-semibold mb-3">Select your country</h3>
@@ -556,7 +555,7 @@ const PresaleForm = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {isVerified && <TermsCheckbox />}
         <img id="bg-form" src="/img/form-bg.jpg" className="absolute opacity-15 w-full h-full inset-0 -z-50" alt="" />

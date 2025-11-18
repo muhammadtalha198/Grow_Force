@@ -5,13 +5,13 @@ import { ArrowLeft } from "lucide-react";
 
 interface VerificationScreenProps {
   userId: string;
-  countryCode: 'US' | 'Other';
+  // countryCode: 'US' | 'Other';
   onClose: () => void;
   onVerified?: () => void;
 }
 
 
-const VerificationScreen = ({ userId, countryCode, onClose, onVerified }: VerificationScreenProps) => {
+const VerificationScreen = ({ userId, onClose, onVerified }: VerificationScreenProps) => {
   const [loading, setLoading] = useState(true);
   const [, setStarted] = useState(false);
   const [visible, setVisible] = useState(false); // fade-in / fade-out control
@@ -31,7 +31,7 @@ const VerificationScreen = ({ userId, countryCode, onClose, onVerified }: Verifi
             userId,
             email: "user@example.com",
             phone: "+1234567890",
-            country: countryCode === 'US' ? 'US' : 'Other',
+            // country: countryCode === 'US' ? 'US' : 'Other',
           }
         );
 
